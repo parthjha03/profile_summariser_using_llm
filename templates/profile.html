@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block title %}Profile for {{ name }}{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2>Profile for {{ name }}</h2>
+        <div class="profile-section">
+            <h3>Profile Summary</h3>
+            <p>{{ profile.profile_summary|safe }}</p>
+        </div>
+        <div class="profile-section">
+            <h3>News Summary</h3>
+            <p>{{ profile.news_summary|safe }}</p>
+            <button class="summarize-btn" id="summary-section" data-url="{{ profile.news_summary_url }}">Summarize News</button>
+        </div>
+        <div id="summary-section" class="profile-section">
+            <h3>Article Summary</h3>
+            <p id="summary-content"></p>
+        </div>
+        <div class="profile-section">
+            <h3>Wikipedia Summary</h3>
+            <p>{{ profile.wikipedia_summary|safe }}</p>
+            <button class="summarize-btn" data-url="{{ profile.wikipedia_summary_url }}">Summarize Wikipedia</button>
+        </div>
+        <div class="profile-section">
+            <h3>Twitter Feed</h3>
+            <p>{{ profile.twitter_summary|safe }}</p>
+        </div>
+        <div class="profile-section">
+            <h3>Custom Sources</h3>
+            <p>{{ profile.custom_summary|safe }}</p>
+        </div>
+        <div class="profile-section">
+            <h3>Summarized Combined Text</h3>
+            <p>{{ profile.summarized_combined_text|safe }}</p>
+        </div>
+        <a href="{{ url_for('index') }}">Back to Home</a>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.summarize-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.getElementById("summary-section").style.display="block";
+                    const url = button.getAttribute('data-url');
+                    fetch('{{ url_for("summarize") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ url: url })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const summarySection = document.getElementById('summary-content');
+                        summarySection.innerHTML = data.summary;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error summarizing the article.');
+                    });
+                });
+            });
+        });
+
+        
+    </script>
+{% endblock %}

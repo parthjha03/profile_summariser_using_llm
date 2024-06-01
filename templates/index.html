@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    <h1>Welcome to the Dark Mode Website</h1>
+    <p>This is the home page. Use the navigation to access different features.</p>
+    <h2>Generate a Profile</h2>
+    <form method="post" action="{{ url_for('profile') }}">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="custom_sources">Custom Sources (comma-separated URLs):</label>
+        <input type="text" id="custom_sources" name="custom_sources">
+        <button type="submit">Generate Profile</button>
+    </form>
+{% endblock %}
